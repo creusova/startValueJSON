@@ -1,17 +1,18 @@
 {
-    "Trening_Number": "",
+    "TRENING_NUMBER": "",
     "id0": {
-        "id": "0",
+        "id": 0,
+        "position_startup": 0,
         "result_math_model": [
             {
-                "Q_in": "0",
-                "Q_out1": "0",
-                "Q_out2": "0"
+                "Q_in": 0,
+                "Q_out1": 0,
+                "Q_out2": 0
             },
             {
-                "P_in": "0",
-                "P_out": "0",
-                "deltaP": "0"
+                "P_in": 0,
+                "P_out": 0,
+                "deltaP": 0
             }
         ]
     }

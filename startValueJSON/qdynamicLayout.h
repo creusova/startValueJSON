@@ -12,7 +12,15 @@ class QDynamicLayout : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QDynamicLayout(QWidget *parent = 0);
+    QDynamicLayout(QWidget *parent = 0,
+                   int idNumber = 0,
+                   int positionStart = 0,
+                   double Q_in = 0,
+                   double Q_out1 = 0,
+                   double Q_out2 = 0,
+                   double P_in = 0,
+                   double P_out = 0,
+                   double deltaP = 0);
     virtual ~QDynamicLayout();
 
 

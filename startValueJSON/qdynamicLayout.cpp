@@ -1,6 +1,14 @@
 #include "qdynamicLayout.h"
 
-QDynamicLayout::QDynamicLayout(QWidget *parent) :
+QDynamicLayout::QDynamicLayout(QWidget *parent,
+                               int id,
+                               int position,
+                               double Q_inValue,
+                               double Q_out1Value,
+                               double Q_out2Value,
+                               double P_inValue,
+                               double P_outValue,
+                               double deltaPValue) :
     deleteButton(parent),
     idNumber(parent),
 	positionStart(parent),
@@ -11,20 +19,20 @@ QDynamicLayout::QDynamicLayout(QWidget *parent) :
     P_out(parent),
     deltaP(parent),
     table(parent),
-    m_doubleValidator(-100,1000,2,this),
+    m_doubleValidator(-100,1000,6,this),
     m_intValidator(1, 1000, this)
 {
 
 
     deleteButton.setText("Удалить");
-    idNumber.setText("0");
-	positionStart.setText("0");
-    Q_in.setText("0");
-    Q_out1.setText("0");
-    Q_out2.setText("0");
-    P_in.setText("0");
-    P_out.setText("0");
-    deltaP.setText("0");
+    idNumber.setText(QString::number(id));
+    positionStart.setText(QString::number(position));
+    Q_in.setText(QString::number(Q_inValue));
+    Q_out1.setText(QString::number(Q_out1Value));
+    Q_out2.setText(QString::number(Q_out2Value));
+    P_in.setText(QString::number(P_inValue));
+    P_out.setText(QString::number(P_outValue));
+    deltaP.setText(QString::number(deltaPValue));
 
     m_doubleValidator.setNotation(QDoubleValidator::StandardNotation);
     idNumber.setValidator(&m_intValidator);
