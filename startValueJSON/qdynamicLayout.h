@@ -13,26 +13,31 @@ class QDynamicLayout : public QWidget
     Q_OBJECT
 public:
     QDynamicLayout(QWidget *parent = 0,
-                   int idNumber = 0,
-                   int positionStart = 0,
-                   double Q_in = 0,
+                   QString idNumber = "0",
+                   QString nameElement = "F500",
+                   QString typeElement ="valve",
+                   QString statusElement = "0"
+                  /* double Q_in = 0,
                    double Q_out1 = 0,
                    double Q_out2 = 0,
                    double P_in = 0,
                    double P_out = 0,
-                   double deltaP = 0);
+                   double deltaP = 0*/);
     virtual ~QDynamicLayout();
 
 
     QPushButton deleteButton;
-    QLineEdit idNumber;
-	QLineEdit positionStart;
-    QLineEdit Q_in;
-    QLineEdit Q_out1;
-    QLineEdit Q_out2;
-    QLineEdit P_in;
-    QLineEdit P_out;
-    QLineEdit deltaP;
+    QLineEdit idEdit;
+    QLineEdit nameEdit;
+    QLineEdit typeEdit;
+    QLineEdit statusEdit;
+//	QLineEdit positionStart;
+//    QLineEdit Q_in;
+//    QLineEdit Q_out1;
+//    QLineEdit Q_out2;
+//    QLineEdit P_in;
+//    QLineEdit P_out;
+//    QLineEdit deltaP;
 
 public slots:
     void deleteAll();

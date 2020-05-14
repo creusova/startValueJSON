@@ -3,7 +3,7 @@
 #include "exch.h"
 #include <stdio.h>
 
-wchar_t convertedDataRecieve[1000];
+wchar_t convertedDataRecieve[60000];
 
 
 
@@ -55,37 +55,44 @@ void MainWindow::on_JSONButton_clicked()
         QDynamicLayout *dynamicLayout = qobject_cast<QDynamicLayout*>(m_verticalLayout->itemAt(i)->widget());
 
 
-		int idInt = dynamicLayout->idNumber.text().toInt();
-		int positionStartInt = dynamicLayout->positionStart.text().toInt();
+        QString idInt = dynamicLayout->idEdit.text();//.toInt().toString();
+        QString name = dynamicLayout->nameEdit.text();
+        QString type = dynamicLayout->typeEdit.text();
+        QString status = dynamicLayout->statusEdit.text();
+//		int positionStartInt = dynamicLayout->positionStart.text().toInt();
 
-        float QinFloat = dynamicLayout->Q_in.text().replace(QChar(','),QChar('.')).toFloat();
-        float Qout1Float = dynamicLayout->Q_out1.text().replace(QChar(','),QChar('.')).toFloat();
-        float Qout2Float =dynamicLayout->Q_out2.text().replace(QChar(','),QChar('.')).toFloat();
-        float PinFloat = dynamicLayout->P_in.text().replace(QChar(','),QChar('.')).toFloat();
-        float PoutFloat = dynamicLayout->P_out.text().replace(QChar(','),QChar('.')).toFloat();
-        float deltaPFloat = dynamicLayout->deltaP.text().replace(QChar(','),QChar('.')).toFloat();
+//        float QinFloat = dynamicLayout->Q_in.text().replace(QChar(','),QChar('.')).toFloat();
+//        float Qout1Float = dynamicLayout->Q_out1.text().replace(QChar(','),QChar('.')).toFloat();
+//        float Qout2Float =dynamicLayout->Q_out2.text().replace(QChar(','),QChar('.')).toFloat();
+//        float PinFloat = dynamicLayout->P_in.text().replace(QChar(','),QChar('.')).toFloat();
+//        float PoutFloat = dynamicLayout->P_out.text().replace(QChar(','),QChar('.')).toFloat();
+//        float deltaPFloat = dynamicLayout->deltaP.text().replace(QChar(','),QChar('.')).toFloat();
 
 
-        QString id = "id" + dynamicLayout->idNumber.text();
+        QString id = "id" + dynamicLayout->idEdit.text();
 		idObject["id"] = idInt;//dynamicLayout->idNumber.text();
-		idObject["position_startup"] = positionStartInt;//dynamicLayout->positionStart.text();
+        idObject["name"] = name;
+        idObject["type_element"] = type;
+        idObject["status"] = status;
 
-        while(!resultArray.isEmpty())
-        {
-            resultArray.removeLast();
-        }
+//		idObject["position_startup"] = positionStartInt;//dynamicLayout->positionStart.text();
 
-		Qin_outObject["Q_in"] = QinFloat;// dynamicLayout->Q_in.text();
-		Qin_outObject["Q_out1"] = Qout1Float;// dynamicLayout->Q_out1.text();
-		Qin_outObject["Q_out2"] = Qout2Float;//dynamicLayout->Q_out2.text();
-        resultArray.append(Qin_outObject);
+//        while(!resultArray.isEmpty())
+//        {
+//            resultArray.removeLast();
+//        }
 
-		Pin_outObject["P_in"] = PinFloat; //dynamicLayout->P_in.text();
-		Pin_outObject["P_out"] = PoutFloat; //dynamicLayout->P_out.text();
-		Pin_outObject["deltaP"] = deltaPFloat; //dynamicLayout->deltaP.text();
-        resultArray.append(Pin_outObject);
+//		Qin_outObject["Q_in"] = QinFloat;// dynamicLayout->Q_in.text();
+//		Qin_outObject["Q_out1"] = Qout1Float;// dynamicLayout->Q_out1.text();
+//		Qin_outObject["Q_out2"] = Qout2Float;//dynamicLayout->Q_out2.text();
+//        resultArray.append(Qin_outObject);
 
-        idObject["result_math_model"] = resultArray;
+//		Pin_outObject["P_in"] = PinFloat; //dynamicLayout->P_in.text();
+//		Pin_outObject["P_out"] = PoutFloat; //dynamicLayout->P_out.text();
+//		Pin_outObject["deltaP"] = deltaPFloat; //dynamicLayout->deltaP.text();
+//        resultArray.append(Pin_outObject);
+
+//        idObject["result_math_model"] = resultArray;
 
         sopoObject["TRENING_NUMBER"]=ui->numberTrening->text();
         sopoObject[id] = idObject;
@@ -97,7 +104,7 @@ void MainWindow::on_JSONButton_clicked()
     QFile saveFile(QStringLiteral("saveData.json"));
     if (!saveFile.open(QIODevice::WriteOnly))
     {
-		//qWarning("Couldn't open save file.");
+        qWarning("Couldn't open save file.");
     }
 
 
@@ -108,10 +115,10 @@ void MainWindow::on_JSONButton_clicked()
     QString( toJsonData ).toWCharArray(convertedData);
     convertedData[toJsonData.size()] = '\0';
 
-	for(int i=0; i<toJsonData.size() + 1;i++)
-	{
-		convertedDataRecieve[i] = convertedData[i];
-	}
+    for(int i=0; i<toJsonData.size() + 1;i++)
+    {
+        convertedDataRecieve[i] = convertedData[i];
+    }
 
     ui->statusbar->addWidget(textStatusBar);
     textStatusBar->setText("Файл JSON готов");
@@ -119,105 +126,105 @@ void MainWindow::on_JSONButton_clicked()
 
 	QLibrary lib("exch");
 
-    if( !lib.load() )
-    {
-		 //qWarning("Loading failed!");
-         textStatusBar->setText("Не удалось подключиться к библиотеке");
-         return;
-    }
-    else
-    {
-		//qWarning("Ok");
-    }
+//    if( !lib.load() )
+//    {
+//		 //qWarning("Loading failed!");
+//         textStatusBar->setText("Не удалось подключиться к библиотеке");
+//         return;
+//    }
+//    else
+//    {
+//		//qWarning("Ok");
+//    }
 
-	typedef bool (*CloseFunction)();
-	CloseFunction closedll = (CloseFunction) lib.resolve("CloseDLL");
+//	typedef bool (*CloseFunction)();
+//	CloseFunction closedll = (CloseFunction) lib.resolve("CloseDLL");
 
-	if (!closedll)
-	{
-		//qWarning("Error CloseDLL");
-		textStatusBar->setText("Не найдена функция CloseDLL");
-		return;
-	}
+//	if (!closedll)
+//	{
+//		//qWarning("Error CloseDLL");
+//		textStatusBar->setText("Не найдена функция CloseDLL");
+//		return;
+//	}
 
-    typedef bool (*initFunction)(int);
-    bool answer = false;
+//    typedef bool (*initFunction)(int);
+//    bool answer = false;
 
-    initFunction initDll = (initFunction) lib.resolve("InitDLL_Qt");
-    if (initDll)
-    {
-        answer = initDll(8);
-    }
-    else
-    {
-		//qWarning("Error");
-        textStatusBar->setText("Не найдена функция InitDLL_Qt");
-        return;
-    }
+//    initFunction initDll = (initFunction) lib.resolve("InitDLL_Qt");
+//    if (initDll)
+//    {
+//        answer = initDll(8);
+//    }
+//    else
+//    {
+//		//qWarning("Error");
+//        textStatusBar->setText("Не найдена функция InitDLL_Qt");
+//        return;
+//    }
 
-    if (answer==false)
-    {
-        textStatusBar->setText("Функция InitDLL_Qt вернула false");
-		closedll();
-        return;
-    }
+//    if (answer==false)
+//    {
+//        textStatusBar->setText("Функция InitDLL_Qt вернула false");
+//		closedll();
+//        return;
+//    }
 
-    typedef bool (*ConnectFunction)();
-	typedef wchar_t* (*DebugFunction)();
-
-
-    answer = false;
-    ConnectFunction connectIni = (ConnectFunction) lib.resolve("dbConnectIni");
-    DebugFunction debugDLL = (DebugFunction) lib.resolve("GetDebugInfo");
-    if (connectIni)
-    {
-        answer = connectIni();
-        if(debugDLL)
-        {
-            auto debugInfo=debugDLL();
-            QString debugString = QString::fromWCharArray(debugInfo);
-		   // qInfo(qUtf8Printable(debugString));
-        }
-
-    }
-    else
-    {
-		//qWarning("Error");
-        textStatusBar->setText("Не найдена функция dbConnectIni");
-        closedll();
-        return;
-    }
-
-    if (answer==false)
-    {
-        textStatusBar->setText("Функция dbConnectIni вернула false");
-		closedll();
-        return;
-    }
+//    typedef bool (*ConnectFunction)();
+//	typedef wchar_t* (*DebugFunction)();
 
 
-    typedef bool (*SetDataFunction)(int,wchar_t*);
-    SetDataFunction setData = (SetDataFunction) lib.resolve("SetDBDataString");
+//    answer = false;
+//    ConnectFunction connectIni = (ConnectFunction) lib.resolve("dbConnectIni");
+//    DebugFunction debugDLL = (DebugFunction) lib.resolve("GetDebugInfo");
+//    if (connectIni)
+//    {
+//        answer = connectIni();
+//        if(debugDLL)
+//        {
+//            auto debugInfo=debugDLL();
+//            QString debugString = QString::fromWCharArray(debugInfo);
+//		   // qInfo(qUtf8Printable(debugString));
+//        }
 
-    if (setData)
-    {
-        answer = setData(0,convertedData);
-		auto debugInfo=debugDLL();
-		QString debugString = QString::fromWCharArray(debugInfo);
-		//qInfo(qUtf8Printable(debugString));
-    }
-    else
-    {
-		//qWarning("Error SetDBDataString");
-        textStatusBar->setText("Не найдена функция SetDBDataString");
-		closedll();
-        return;
-    }
+//    }
+//    else
+//    {
+//		//qWarning("Error");
+//        textStatusBar->setText("Не найдена функция dbConnectIni");
+//        closedll();
+//        return;
+//    }
+
+//    if (answer==false)
+//    {
+//        textStatusBar->setText("Функция dbConnectIni вернула false");
+//		closedll();
+//        return;
+//    }
 
 
-//    CloseDLL
-    closedll();
-    textStatusBar->setText("Успех");
+//    typedef bool (*SetDataFunction)(int,wchar_t*);
+//    SetDataFunction setData = (SetDataFunction) lib.resolve("SetDBDataString");
+
+//    if (setData)
+//    {
+//        answer = setData(0,convertedData);
+//		auto debugInfo=debugDLL();
+//		QString debugString = QString::fromWCharArray(debugInfo);
+//		//qInfo(qUtf8Printable(debugString));
+//    }
+//    else
+//    {
+//		//qWarning("Error SetDBDataString");
+//        textStatusBar->setText("Не найдена функция SetDBDataString");
+//		closedll();
+//        return;
+//    }
+
+
+////    CloseDLL
+//    closedll();
+//    textStatusBar->setText("Успех");
 
 
 }
@@ -243,11 +250,12 @@ void MainWindow::on_receiveDataBDButton_clicked()
 	QStringList allKeys = JSONReceive.keys();
 
 	QJsonObject Array;
-	int id, position;
-	float Qin,Qout1,Qout2,Pin,Pout,deltaP;
+//    int id, status;
+//	float Qin,Qout1,Qout2,Pin,Pout,deltaP;
+    QString name, type,id, status, treningNumber;
 	QJsonArray arrayQ;
-	QJsonObject Q;
-	QJsonObject P;
+//	QJsonObject Q;
+//	QJsonObject P;
 
     for(int i = 0; i < m_verticalLayout->count(); i++)
     {
@@ -255,26 +263,33 @@ void MainWindow::on_receiveDataBDButton_clicked()
         dynamicLayout->deleteAll();
     }
 
+    treningNumber = JSONReceive["TRENING_NUMBER"].toString();
+    ui->numberTrening->setText(treningNumber);
+
     for(int i=1; i<allKeys.size();i++)
 	{
 		Array = JSONReceive[allKeys[i]].toObject();
 
-		id = Array["id"].toInt();
-		position = Array["position_startup"].toInt();
+        id = Array["id"].toString();
+        status = Array["status"].toString();
 
-		arrayQ=Array["result_math_model"].toArray();
+        name = Array["name"].toString();
+        type = Array["type_element"].toString();
 
-		Q = arrayQ[0].toObject();
-		Qin = Q["Q_in"].toDouble();
-		Qout1 = Q["Q_out1"].toDouble();
-		Qout2 = Q["Q_out2"].toDouble();
 
-		P = arrayQ[1].toObject();
-		Pin = P["P_in"].toDouble();
-		Pout = P["P_out"].toDouble();
-		deltaP = P["deltaP"].toDouble();
+//		arrayQ=Array["result_math_model"].toArray();
 
-        QDynamicLayout *button = new QDynamicLayout(this,id,position,Qin,Qout1,Qout2,Pin,Pout,deltaP);  // Создаем объект динамической кнопки
+//		Q = arrayQ[0].toObject();
+//		Qin = Q["Q_in"].toDouble();
+//		Qout1 = Q["Q_out1"].toDouble();
+//		Qout2 = Q["Q_out2"].toDouble();
+
+//		P = arrayQ[1].toObject();
+//		Pin = P["P_in"].toDouble();
+//		Pout = P["P_out"].toDouble();
+//		deltaP = P["deltaP"].toDouble();
+
+        QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
 
         m_verticalLayout->addWidget(button);
     }
@@ -307,8 +322,10 @@ void MainWindow::on_receiveDataFileButton_clicked()
     QStringList allKeys = JSONReceive.keys();
 
     QJsonObject Array;
-    int id, position;
-    float Qin,Qout1,Qout2,Pin,Pout,deltaP;
+//    int treningNumber;
+//    int id, status;
+//    float Qin,Qout1,Qout2,Pin,Pout,deltaP;
+    QString name, type,id, status,treningNumber;
     QJsonArray arrayQ;
     QJsonObject Q;
     QJsonObject P;
@@ -319,27 +336,34 @@ void MainWindow::on_receiveDataFileButton_clicked()
         dynamicLayout->deleteAll();
     }
 
+//    Array = JSONReceive[allKeys[0]].toObject();
+    treningNumber = JSONReceive["TRENING_NUMBER"].toString();
+    ui->numberTrening->setText(treningNumber);
 
     for(int i=1; i<allKeys.size();i++)
     {
         Array = JSONReceive[allKeys[i]].toObject();
 
-        id = Array["id"].toInt();
-        position = Array["position_startup"].toInt();
+        id = Array["id"].toString();
+        status = Array["status"].toString();
 
-        arrayQ=Array["result_math_model"].toArray();
+        name = Array["name"].toString();
+        type = Array["type_element"].toString();
+//        position = Array["position_startup"].toInt();
 
-        Q = arrayQ[0].toObject();
-        Qin = Q["Q_in"].toDouble();
-        Qout1 = Q["Q_out1"].toDouble();
-        Qout2 = Q["Q_out2"].toDouble();
+//        arrayQ=Array["result_math_model"].toArray();
 
-        P = arrayQ[1].toObject();
-        Pin = P["P_in"].toDouble();
-        Pout = P["P_out"].toDouble();
-        deltaP = P["deltaP"].toDouble();
+//        Q = arrayQ[0].toObject();
+//        Qin = Q["Q_in"].toDouble();
+//        Qout1 = Q["Q_out1"].toDouble();
+//        Qout2 = Q["Q_out2"].toDouble();
 
-        QDynamicLayout *button = new QDynamicLayout(this,id,position,Qin,Qout1,Qout2,Pin,Pout,deltaP);  // Создаем объект динамической кнопки
+//        P = arrayQ[1].toObject();
+//        Pin = P["P_in"].toDouble();
+//        Pout = P["P_out"].toDouble();
+//        deltaP = P["deltaP"].toDouble();
+
+        QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
 
         m_verticalLayout->addWidget(button);
 
