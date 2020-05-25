@@ -747,7 +747,7 @@ debug/mainwindow.o: mainwindow.cpp mainwindow.h \
 		C:/Qt/5.14.2/mingw73_32/include/QtWidgets/QStatusBar \
 		C:/Qt/5.14.2/mingw73_32/include/QtWidgets/qstatusbar.h \
 		C:/Qt/5.14.2/mingw73_32/include/QtWidgets/QWidget \
-		exch.h
+		srcDLL/exch.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o mainwindow.cpp
 
 debug/qdynamicLayout.o: qdynamicLayout.cpp qdynamicLayout.h \

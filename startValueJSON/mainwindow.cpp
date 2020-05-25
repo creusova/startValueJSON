@@ -1,10 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "exch.h"
+#include "srcDLL/exch.h"
 #include <stdio.h>
 
 wchar_t convertedDataRecieve[60000];
 
+
+typedef bool (*CloseFunction)();
+CloseFunction closedll;
+typedef bool (*initFunction)(int);
+initFunction initDll;
+typedef bool (*ConnectFunction)();
+ConnectFunction connectIni;
+typedef bool (*SetDataFunction)(int,wchar_t*);
+SetDataFunction setData;
+typedef wchar_t (*GetDataFunction)(int);
+GetDataFunction getData;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -14,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     m_verticalLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
     textStatusBar = new QLabel;
+    ui->statusbar->addWidget(textStatusBar);
     textStatusBar->setText("Program start");
 }
 
@@ -40,19 +52,73 @@ void MainWindow::on_addButton_clicked()
 
 void MainWindow::on_addLib_clicked()
 {
-    QString lib_path = "exch.dll";
+    QString lib_path=qApp->applicationDirPath() +"/exch.dll";
     QLibrary lib(lib_path);
+
     if( !lib.load() )
     {
          qDebug("Loading failed!");
-         textStatusBar->setText("Не удалось подключиться к библиотеке");
+         textStatusBar->setText(lib_path+"  Не удалось подключиться к библиотеке");
          return;
     }
     else
     {
-        textStatusBar->setText("Удалось подключиться к библиотеке");
-        qWarning("Ok");
+        textStatusBar->setText(lib_path+"  Подключились к библиотеке");
+        qWarning("Load lib");
     }
+
+
+
+    closedll = (CloseFunction) lib.resolve("CloseDLL");
+    if (!closedll)
+    {
+        qWarning("Error CloseDLL");
+        textStatusBar->setText("Не найдена функция CloseDLL");
+        return;
+    }
+
+
+
+    initDll = (initFunction) lib.resolve("InitDLL_Qt");
+    if (!initDll)
+    {
+        qWarning("Error InitDLL_Qt");
+        textStatusBar->setText("Не найдена функция InitDLL_Qt");
+        closedll();
+        return;
+    }
+
+
+    connectIni = (ConnectFunction) lib.resolve("dbConnectIni");
+    if (!connectIni)
+    {
+        qWarning("Error dbConnectIni");
+        textStatusBar->setText("Не найдена функция dbConnectIni");
+        closedll();
+        return;
+    }
+
+
+    setData = (SetDataFunction) lib.resolve("SetDBDataString");
+    if (!setData)
+    {
+        qWarning("Error SetDBDataString");
+        textStatusBar->setText("Не найдена функция SetDBDataString");
+        closedll();
+        return;
+    }
+
+
+    getData = (GetDataFunction) lib.resolve("GetDBDataString");
+    if (!getData)
+    {
+        qWarning("Error GetDBDataString");
+        textStatusBar->setText("Не найдена функция GetDBDataString");
+        closedll();
+        return;
+    }
+
+    textStatusBar->setText("Все функции в библиотеке найдены");
 }
 
 
@@ -73,7 +139,6 @@ void MainWindow::on_JSONButton_clicked()
     for(int i = 0; i < m_verticalLayout->count(); i++)
     {
         QDynamicLayout *dynamicLayout = qobject_cast<QDynamicLayout*>(m_verticalLayout->itemAt(i)->widget());
-
 
         QString idInt = dynamicLayout->idEdit.text();//.toInt().toString();
         QString name = dynamicLayout->nameEdit.text();
@@ -125,6 +190,7 @@ void MainWindow::on_JSONButton_clicked()
     if (!saveFile.open(QIODevice::WriteOnly))
     {
         qWarning("Couldn't open save file.");
+        textStatusBar->setText("Не открыть файл для записи JSON");
     }
 
 
@@ -140,111 +206,38 @@ void MainWindow::on_JSONButton_clicked()
         convertedDataRecieve[i] = convertedData[i];
     }
 
-    ui->statusbar->addWidget(textStatusBar);
+
     textStatusBar->setText("Файл JSON готов");
 
 
-	QLibrary lib("exch");
+    bool answerFromLib = false;
 
-//    if( !lib.load() )
-//    {
-//		 //qWarning("Loading failed!");
-//         textStatusBar->setText("Не удалось подключиться к библиотеке");
-//         return;
-//    }
-//    else
-//    {
-//		//qWarning("Ok");
-//    }
-
-//	typedef bool (*CloseFunction)();
-//	CloseFunction closedll = (CloseFunction) lib.resolve("CloseDLL");
-
-//	if (!closedll)
-//	{
-//		//qWarning("Error CloseDLL");
-//		textStatusBar->setText("Не найдена функция CloseDLL");
-//		return;
-//	}
-
-//    typedef bool (*initFunction)(int);
-//    bool answer = false;
-
-//    initFunction initDll = (initFunction) lib.resolve("InitDLL_Qt");
-//    if (initDll)
-//    {
-//        answer = initDll(8);
-//    }
-//    else
-//    {
-//		//qWarning("Error");
-//        textStatusBar->setText("Не найдена функция InitDLL_Qt");
-//        return;
-//    }
-
-//    if (answer==false)
-//    {
-//        textStatusBar->setText("Функция InitDLL_Qt вернула false");
-//		closedll();
-//        return;
-//    }
-
-//    typedef bool (*ConnectFunction)();
-//	typedef wchar_t* (*DebugFunction)();
+    answerFromLib = initDll(8);
+    if (answerFromLib==false)
+    {
+        textStatusBar->setText("Функция InitDLL_Qt вернула false");
+        closedll();
+        return;
+    }
 
 
-//    answer = false;
-//    ConnectFunction connectIni = (ConnectFunction) lib.resolve("dbConnectIni");
-//    DebugFunction debugDLL = (DebugFunction) lib.resolve("GetDebugInfo");
-//    if (connectIni)
-//    {
-//        answer = connectIni();
-//        if(debugDLL)
-//        {
-//            auto debugInfo=debugDLL();
-//            QString debugString = QString::fromWCharArray(debugInfo);
-//		   // qInfo(qUtf8Printable(debugString));
-//        }
+    answerFromLib = false;
+    answerFromLib = connectIni();
+    if (answerFromLib==false)
+    {
+        textStatusBar->setText("Функция dbConnectIni вернула false");
+        closedll();
+        return;
+    }
 
-//    }
-//    else
-//    {
-//		//qWarning("Error");
-//        textStatusBar->setText("Не найдена функция dbConnectIni");
-//        closedll();
-//        return;
-//    }
-
-//    if (answer==false)
-//    {
-//        textStatusBar->setText("Функция dbConnectIni вернула false");
-//		closedll();
-//        return;
-//    }
-
-
-//    typedef bool (*SetDataFunction)(int,wchar_t*);
-//    SetDataFunction setData = (SetDataFunction) lib.resolve("SetDBDataString");
-
-//    if (setData)
-//    {
-//        answer = setData(0,convertedData);
-//		auto debugInfo=debugDLL();
-//		QString debugString = QString::fromWCharArray(debugInfo);
-//		//qInfo(qUtf8Printable(debugString));
-//    }
-//    else
-//    {
-//		//qWarning("Error SetDBDataString");
-//        textStatusBar->setText("Не найдена функция SetDBDataString");
-//		closedll();
-//        return;
-//    }
-
-
-////    CloseDLL
-//    closedll();
-//    textStatusBar->setText("Успех");
+    answerFromLib = false;
+    answerFromLib = setData(0,convertedData);
+    if (answerFromLib==false)
+    {
+        textStatusBar->setText("Функция SetDBDataString вернула false");
+        closedll();
+        return;
+    }
 
 
 }
