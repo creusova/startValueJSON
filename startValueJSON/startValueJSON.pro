@@ -12,7 +12,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 #DEPENDPATH += ../Qt5
 INCLUDEPATH += ./srcDLL
-LIBS += -L./srcDLL -lexch
+#LIBS += -L./srcDLL -lexch
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication::addLibraryPath("./srcDLL");
+//	QApplication::addLibraryPath("./srcDLL");
 
     QApplication a(argc, argv);
     MainWindow w;

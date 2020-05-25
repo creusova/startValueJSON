@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     m_verticalLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
     textStatusBar = new QLabel;
+    textStatusBar->setText("Program start");
 }
 
 
@@ -27,12 +28,31 @@ MainWindow::~MainWindow()
 
 /**************************************************/
 /*   Метод для добавления динамических элементов  */
+/*   Вызывается при нажатие на кнопку добавить    */
 /**************************************************/
 void MainWindow::on_addButton_clicked()
 {
-    QDynamicLayout *button = new QDynamicLayout(this);  // Создаем объект динамической кнопки
+    QDynamicLayout *button = new QDynamicLayout(this);  // Создаем объект динамического лайаута
 
     m_verticalLayout->addWidget(button);
+}
+
+
+void MainWindow::on_addLib_clicked()
+{
+    QString lib_path = "exch.dll";
+    QLibrary lib(lib_path);
+    if( !lib.load() )
+    {
+         qDebug("Loading failed!");
+         textStatusBar->setText("Не удалось подключиться к библиотеке");
+         return;
+    }
+    else
+    {
+        textStatusBar->setText("Удалось подключиться к библиотеке");
+        qWarning("Ok");
+    }
 }
 
 

@@ -30,6 +30,7 @@ public:
     QWidget *verticalLayoutWidget_2;
     QHBoxLayout *horizontalLayout;
     QPushButton *addButton;
+    QPushButton *addLib;
     QPushButton *JSONButton;
     QScrollArea *Scroll;
     QWidget *scrollAreaWidgetContents;
@@ -61,7 +62,7 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayoutWidget_2 = new QWidget(centralwidget);
         verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
-        verticalLayoutWidget_2->setGeometry(QRect(30, 20, 251, 25));
+        verticalLayoutWidget_2->setGeometry(QRect(10, 20, 343, 25));
         horizontalLayout = new QHBoxLayout(verticalLayoutWidget_2);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -69,6 +70,11 @@ public:
         addButton->setObjectName(QString::fromUtf8("addButton"));
 
         horizontalLayout->addWidget(addButton);
+
+        addLib = new QPushButton(verticalLayoutWidget_2);
+        addLib->setObjectName(QString::fromUtf8("addLib"));
+
+        horizontalLayout->addWidget(addLib);
 
         JSONButton = new QPushButton(verticalLayoutWidget_2);
         JSONButton->setObjectName(QString::fromUtf8("JSONButton"));
@@ -133,7 +139,7 @@ public:
 
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(340, 20, 151, 31));
+        layoutWidget->setGeometry(QRect(360, 20, 141, 31));
         horizontalLayout_3 = new QHBoxLayout(layoutWidget);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
@@ -171,6 +177,7 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         addButton->setText(QCoreApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214", nullptr));
+        addLib->setText(QCoreApplication::translate("MainWindow", "\320\237\320\276\320\264\320\272\320\273\321\216\321\207\320\270\321\202\321\214 \320\261\320\270\320\261\320\273\320\270\320\276\321\202\320\265\320\272\321\203", nullptr));
         JSONButton->setText(QCoreApplication::translate("MainWindow", "\320\241\321\204\320\276\321\200\320\274\320\270\321\202\321\200\320\276\320\262\320\260\321\202\321\214 JSON", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "Id", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "Position Start", nullptr));

@@ -31,6 +31,7 @@ private slots:
     void on_JSONButton_clicked(); // СЛОТ-обработчик нажатия кнопки удаления
 	void on_receiveDataBDButton_clicked();           // СЛОТ для получения номера нажатой динамической кнопки
 	void on_receiveDataFileButton_clicked();
+    void on_addLib_clicked();
 
 private:
     Ui::MainWindow *ui;
