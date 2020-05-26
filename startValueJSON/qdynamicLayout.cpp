@@ -22,16 +22,9 @@ QDynamicLayout::QDynamicLayout(QWidget *parent,
     statusEdit.setText(QString::number(status));
 
 
-//    m_doubleValidator.setNotation(QDoubleValidator::StandardNotation);
+    //Проверка, что вводит целочисленные значения
     idEdit.setValidator(&m_intValidator);
     statusEdit.setValidator(&m_intValidator);
-//	positionStart.setValidator(&m_intValidator);
-//    Q_in.setValidator(&m_doubleValidator);
-//    Q_out1.setValidator(&m_doubleValidator);
-//    Q_out2.setValidator(&m_doubleValidator);
-//    P_in.setValidator(&m_doubleValidator);
-//    P_out.setValidator(&m_doubleValidator);
-//    deltaP.setValidator(&m_doubleValidator);
 
 
     table.addWidget(&idEdit);
@@ -46,7 +39,7 @@ QDynamicLayout::QDynamicLayout(QWidget *parent,
 }
 
 
-
+// Удаление Layout
 void QDynamicLayout::deleteAll()
 {
     this->hide();

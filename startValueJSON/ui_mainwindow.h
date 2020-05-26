@@ -45,8 +45,8 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_3;
     QLabel *label_2;
-    QLabel *label;
     QLabel *label_6;
+    QLabel *label;
     QScrollArea *Scroll;
     QWidget *scrollAreaWidgetContents;
     QWidget *layoutWidget_2;
@@ -136,15 +136,15 @@ public:
 
         horizontalLayout_2->addWidget(label_2);
 
-        label = new QLabel(horizontalLayoutWidget);
-        label->setObjectName(QString::fromUtf8("label"));
-
-        horizontalLayout_2->addWidget(label);
-
         label_6 = new QLabel(horizontalLayoutWidget);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
         horizontalLayout_2->addWidget(label_6);
+
+        label = new QLabel(horizontalLayoutWidget);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        horizontalLayout_2->addWidget(label);
 
         Scroll = new QScrollArea(centralwidget);
         Scroll->setObjectName(QString::fromUtf8("Scroll"));
@@ -203,8 +203,8 @@ public:
         numberTrening->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "Id", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "name", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "status", nullptr));
         label_6->setText(QCoreApplication::translate("MainWindow", "type element", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "status", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Session Number", nullptr));
     } // retranslateUi
 

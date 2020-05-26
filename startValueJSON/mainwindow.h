@@ -27,19 +27,18 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
-    void on_addButton_clicked();    // СЛОТ-обработчик нажатия кнопки добавления
-    void on_JSONButton_clicked(); // СЛОТ-обработчик нажатия кнопки удаления
-	void on_receiveDataBDButton_clicked();           // СЛОТ для получения номера нажатой динамической кнопки
-	void on_receiveDataFileButton_clicked();
-    void on_addLib_clicked();
-    void on_closeLib_clicked();
+    void on_addButton_clicked();                // Обработчик нажатия кнопки добавления Layout "Добавить"
+    void on_JSONButton_clicked();               // Обработчик нажатия кнопки отправки JSON файла "Сформировать JSON"
+    void on_receiveDataBDButton_clicked();      // Обработчик нажатия кнопки получить JSON с базы данных "Получить данные с базы"
+    void on_receiveDataFileButton_clicked();    // Обработчик нажатия кнопки прочитать JSON из файла "Получить данные из файла"
+    void on_addLib_clicked();                   // Обработчик нажатия кнопки подлючить библиотеку
+    void on_closeLib_clicked();                 // Обработчик нажатия кнопки отключить библиотеку
 
 private:
     Ui::MainWindow *ui;
 
-    QVBoxLayout * m_verticalLayout;
-    QVBoxLayout * m_all;
-    QLabel * textStatusBar;
+    QVBoxLayout * m_verticalLayout;             // Скролл для поля где добавляются Layout
+    QLabel * textStatusBar;                     // Статус бар внизу
 };
 
 #endif // MAINWINDOW_H

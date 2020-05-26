@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_verticalLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
     textStatusBar = new QLabel;
     ui->statusbar->addWidget(textStatusBar);
-    textStatusBar->setText("Program start");
+    textStatusBar->setText("Программа запущена");
 }
 
 
@@ -43,16 +43,24 @@ MainWindow::~MainWindow()
 
 /**************************************************/
 /*   Метод для добавления динамических элементов  */
-/*   Вызывается при нажатие на кнопку добавить    */
+/*   Вызывается при нажатие на кнопку Добавить    */
 /**************************************************/
 void MainWindow::on_addButton_clicked()
 {
-    QDynamicLayout *button = new QDynamicLayout(this);  // Создаем объект динамического лайаута
 
+    QDynamicLayout *button = new QDynamicLayout(this);  // Создаем объект динамического Layout
     m_verticalLayout->addWidget(button);
+
 }
 
 
+
+
+/*********************************************************/
+/*             Метод для отключения библиотеки           */
+/*                Вызывает функцию closedll              */
+/* Вызывается при нажатие на кнопку Отключить библиотеку */
+/*********************************************************/
 void MainWindow::on_closeLib_clicked()
 {
     if (Qt::Checked==ui->checkLib->checkState())
@@ -63,6 +71,14 @@ void MainWindow::on_closeLib_clicked()
     }
 }
 
+
+
+
+/**********************************************************/
+/*            Метод для подключения библиотеки            */
+/*  Подключается к библиотеке и ищет все функции в ней    */
+/* Вызывается при нажатие на кнопку Подключить библиотеку */
+/**********************************************************/
 void MainWindow::on_addLib_clicked()
 {
     QString lib_path=qApp->applicationDirPath() +"/exch.dll";
@@ -143,9 +159,10 @@ void MainWindow::on_addLib_clicked()
 
 
 
-/****************************************************/
-/* Создание файла JSON и отправка его в библиотеку  */
-/****************************************************/
+/******************************************************/
+/*  Создание файла JSON и отправка его в библиотеку   */
+/* Вызывается при нажатие на кнопку Сформировать JSON */
+/******************************************************/
 void MainWindow::on_JSONButton_clicked()
 {
 
@@ -164,40 +181,14 @@ void MainWindow::on_JSONButton_clicked()
         QString name = dynamicLayout->nameEdit.text();
         QString type = dynamicLayout->typeEdit.text();
         int status = dynamicLayout->statusEdit.text().toInt();
-//		int positionStartInt = dynamicLayout->positionStart.text().toInt();
-
-//        float QinFloat = dynamicLayout->Q_in.text().replace(QChar(','),QChar('.')).toFloat();
-//        float Qout1Float = dynamicLayout->Q_out1.text().replace(QChar(','),QChar('.')).toFloat();
-//        float Qout2Float =dynamicLayout->Q_out2.text().replace(QChar(','),QChar('.')).toFloat();
-//        float PinFloat = dynamicLayout->P_in.text().replace(QChar(','),QChar('.')).toFloat();
-//        float PoutFloat = dynamicLayout->P_out.text().replace(QChar(','),QChar('.')).toFloat();
-//        float deltaPFloat = dynamicLayout->deltaP.text().replace(QChar(','),QChar('.')).toFloat();
 
 
         QString id = "id" + dynamicLayout->idEdit.text();
-		idObject["id"] = idInt;//dynamicLayout->idNumber.text();
+        idObject["id"] = idInt;
         idObject["name"] = name;
         idObject["type_element"] = type;
         idObject["status"] = status;
 
-//		idObject["position_startup"] = positionStartInt;//dynamicLayout->positionStart.text();
-
-//        while(!resultArray.isEmpty())
-//        {
-//            resultArray.removeLast();
-//        }
-
-//		Qin_outObject["Q_in"] = QinFloat;// dynamicLayout->Q_in.text();
-//		Qin_outObject["Q_out1"] = Qout1Float;// dynamicLayout->Q_out1.text();
-//		Qin_outObject["Q_out2"] = Qout2Float;//dynamicLayout->Q_out2.text();
-//        resultArray.append(Qin_outObject);
-
-//		Pin_outObject["P_in"] = PinFloat; //dynamicLayout->P_in.text();
-//		Pin_outObject["P_out"] = PoutFloat; //dynamicLayout->P_out.text();
-//		Pin_outObject["deltaP"] = deltaPFloat; //dynamicLayout->deltaP.text();
-//        resultArray.append(Pin_outObject);
-
-//        idObject["result_math_model"] = resultArray;
 
         sopoObject["TRENING_NUMBER"]=ui->numberTrening->text();
         sopoObject[id] = idObject;
@@ -263,7 +254,7 @@ void MainWindow::on_JSONButton_clicked()
     }
 
 
-    textStatusBar->setText("JSON сохранен и отправлен");
+    textStatusBar->setText("JSON сохранен (saveData.json) и отправлен в базу данных");
 
 }
 
@@ -277,7 +268,8 @@ void MainWindow::on_receiveDataBDButton_clicked()
 	QJsonObject JSONReceive = receiveDataJSON.object();
 	QStringList allKeys = JSONReceive.keys();
 	QJsonObject Array;
-    QString name, type,id, status, treningNumber;
+    int id, status;
+    QString name, type, treningNumber;
 	QJsonArray arrayQ;
 
 
@@ -294,28 +286,14 @@ void MainWindow::on_receiveDataBDButton_clicked()
 	{
 		Array = JSONReceive[allKeys[i]].toObject();
 
-        id = Array["id"].toString();
-        status = Array["status"].toString();
-
+        id = Array["id"].toInt();
+        status = Array["status"].toInt();
         name = Array["name"].toString();
         type = Array["type_element"].toString();
 
+        QDynamicLayout *layout = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
 
-//		arrayQ=Array["result_math_model"].toArray();
-
-//		Q = arrayQ[0].toObject();
-//		Qin = Q["Q_in"].toDouble();
-//		Qout1 = Q["Q_out1"].toDouble();
-//		Qout2 = Q["Q_out2"].toDouble();
-
-//		P = arrayQ[1].toObject();
-//		Pin = P["P_in"].toDouble();
-//		Pout = P["P_out"].toDouble();
-//		deltaP = P["deltaP"].toDouble();
-
-      //  QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
-
-//       m_verticalLayout->addWidget(button);
+       m_verticalLayout->addWidget(layout);
     }
 
 
@@ -340,10 +318,8 @@ void MainWindow::on_receiveDataFileButton_clicked()
     QStringList allKeys = JSONReceive.keys();
 
     QJsonObject Array;
-//    int treningNumber;
-//    int id, status;
-//    float Qin,Qout1,Qout2,Pin,Pout,deltaP;
-    QString name, type,id, status,treningNumber;
+    int id, status;
+    QString name, type,treningNumber;
     QJsonArray arrayQ;
     QJsonObject Q;
     QJsonObject P;
@@ -354,7 +330,6 @@ void MainWindow::on_receiveDataFileButton_clicked()
         dynamicLayout->deleteAll();
     }
 
-//    Array = JSONReceive[allKeys[0]].toObject();
     treningNumber = JSONReceive["TRENING_NUMBER"].toString();
     ui->numberTrening->setText(treningNumber);
 
@@ -362,28 +337,16 @@ void MainWindow::on_receiveDataFileButton_clicked()
     {
         Array = JSONReceive[allKeys[i]].toObject();
 
-        id = Array["id"].toString();
-        status = Array["status"].toString();
+        id = Array["id"].toInt();
+        status = Array["status"].toInt();
 
         name = Array["name"].toString();
         type = Array["type_element"].toString();
-//        position = Array["position_startup"].toInt();
 
-//        arrayQ=Array["result_math_model"].toArray();
 
-//        Q = arrayQ[0].toObject();
-//        Qin = Q["Q_in"].toDouble();
-//        Qout1 = Q["Q_out1"].toDouble();
-//        Qout2 = Q["Q_out2"].toDouble();
+        QDynamicLayout *layout = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
 
-//        P = arrayQ[1].toObject();
-//        Pin = P["P_in"].toDouble();
-//        Pout = P["P_out"].toDouble();
-//        deltaP = P["deltaP"].toDouble();
-
-        //QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
-
-        //m_verticalLayout->addWidget(button);
+        m_verticalLayout->addWidget(layout);
 
     }
 
