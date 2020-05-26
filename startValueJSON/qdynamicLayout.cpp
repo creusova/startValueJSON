@@ -1,26 +1,25 @@
 #include "qdynamicLayout.h"
 
 QDynamicLayout::QDynamicLayout(QWidget *parent,
-                               QString id,
+                               int id,
                                QString name,
                                QString type,
-                               QString status) :
+                               int status) :
     deleteButton(parent),
     idEdit(parent),
     nameEdit(parent),
     typeEdit(parent),
     statusEdit(parent),
     table(parent),
-    m_doubleValidator(-100,1000,6,this),
     m_intValidator(1, 1000, this)
 {
 
 
     deleteButton.setText("Удалить");
-    idEdit.setText(id);
+    idEdit.setText(QString::number(id));
     nameEdit.setText(name);
     typeEdit.setText(type);
-    statusEdit.setText(status);
+    statusEdit.setText(QString::number(status));
 
 
 //    m_doubleValidator.setNotation(QDoubleValidator::StandardNotation);

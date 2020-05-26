@@ -1,9 +1,9 @@
 {
-    "TRENING_NUMBER": "",
-    "id0": {
-        "id": "0",
+    "TRENING_NUMBER": "034",
+    "id23": {
+        "id": 23,
         "name": "F500",
-        "status": "0",
+        "status": 26,
         "type_element": "valve"
     }
 }

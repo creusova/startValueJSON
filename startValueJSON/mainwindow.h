@@ -32,11 +32,13 @@ private slots:
 	void on_receiveDataBDButton_clicked();           // СЛОТ для получения номера нажатой динамической кнопки
 	void on_receiveDataFileButton_clicked();
     void on_addLib_clicked();
+    void on_closeLib_clicked();
 
 private:
     Ui::MainWindow *ui;
 
     QVBoxLayout * m_verticalLayout;
+    QVBoxLayout * m_all;
     QLabel * textStatusBar;
 };
 

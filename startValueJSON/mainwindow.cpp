@@ -22,7 +22,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
+
     ui->setupUi(this);
+
     m_verticalLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
     textStatusBar = new QLabel;
     ui->statusbar->addWidget(textStatusBar);
@@ -50,6 +53,16 @@ void MainWindow::on_addButton_clicked()
 }
 
 
+void MainWindow::on_closeLib_clicked()
+{
+    if (Qt::Checked==ui->checkLib->checkState())
+    {
+        textStatusBar->setText("Библиотека отключена");
+        ui->checkLib->setCheckState(Qt::Unchecked);
+        closedll();
+    }
+}
+
 void MainWindow::on_addLib_clicked()
 {
     QString lib_path=qApp->applicationDirPath() +"/exch.dll";
@@ -59,11 +72,13 @@ void MainWindow::on_addLib_clicked()
     {
          qDebug("Loading failed!");
          textStatusBar->setText(lib_path+"  Не удалось подключиться к библиотеке");
+         ui->checkLib->setCheckState(Qt::Unchecked);
          return;
     }
     else
     {
         textStatusBar->setText(lib_path+"  Подключились к библиотеке");
+        ui->checkLib->setCheckState(Qt::Checked);
         qWarning("Load lib");
     }
 
@@ -74,6 +89,7 @@ void MainWindow::on_addLib_clicked()
     {
         qWarning("Error CloseDLL");
         textStatusBar->setText("Не найдена функция CloseDLL");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         return;
     }
 
@@ -84,6 +100,7 @@ void MainWindow::on_addLib_clicked()
     {
         qWarning("Error InitDLL_Qt");
         textStatusBar->setText("Не найдена функция InitDLL_Qt");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
@@ -94,6 +111,7 @@ void MainWindow::on_addLib_clicked()
     {
         qWarning("Error dbConnectIni");
         textStatusBar->setText("Не найдена функция dbConnectIni");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
@@ -104,6 +122,7 @@ void MainWindow::on_addLib_clicked()
     {
         qWarning("Error SetDBDataString");
         textStatusBar->setText("Не найдена функция SetDBDataString");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
@@ -114,6 +133,7 @@ void MainWindow::on_addLib_clicked()
     {
         qWarning("Error GetDBDataString");
         textStatusBar->setText("Не найдена функция GetDBDataString");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
@@ -140,10 +160,10 @@ void MainWindow::on_JSONButton_clicked()
     {
         QDynamicLayout *dynamicLayout = qobject_cast<QDynamicLayout*>(m_verticalLayout->itemAt(i)->widget());
 
-        QString idInt = dynamicLayout->idEdit.text();//.toInt().toString();
+        int idInt = dynamicLayout->idEdit.text().toInt();
         QString name = dynamicLayout->nameEdit.text();
         QString type = dynamicLayout->typeEdit.text();
-        QString status = dynamicLayout->statusEdit.text();
+        int status = dynamicLayout->statusEdit.text().toInt();
 //		int positionStartInt = dynamicLayout->positionStart.text().toInt();
 
 //        float QinFloat = dynamicLayout->Q_in.text().replace(QChar(','),QChar('.')).toFloat();
@@ -216,6 +236,7 @@ void MainWindow::on_JSONButton_clicked()
     if (answerFromLib==false)
     {
         textStatusBar->setText("Функция InitDLL_Qt вернула false");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
@@ -226,6 +247,7 @@ void MainWindow::on_JSONButton_clicked()
     if (answerFromLib==false)
     {
         textStatusBar->setText("Функция dbConnectIni вернула false");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
@@ -235,10 +257,13 @@ void MainWindow::on_JSONButton_clicked()
     if (answerFromLib==false)
     {
         textStatusBar->setText("Функция SetDBDataString вернула false");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
 
+
+    textStatusBar->setText("JSON сохранен и отправлен");
 
 }
 
@@ -247,28 +272,14 @@ void MainWindow::on_JSONButton_clicked()
 void MainWindow::on_receiveDataBDButton_clicked()
 {
 
-//	QString str = "{\"bookHeavyInfo\":{\"Qty\":100},\"bookLightInfo\":{\"Qty\":2}}";
-//	QJsonDocument jsonResponse = QJsonDocument::fromJson(str.toUtf8());
-//	QJsonObject jsonObject = jsonResponse.object();
-//	QJsonObject bookHeavyInfo = jsonObject["bookHeavyInfo"].toObject();
-//	int qty = bookHeavyInfo["Qty"].toInt();
-
-
 	QString JsonString = QString::fromWCharArray(convertedDataRecieve);
-
 	QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
-
 	QJsonObject JSONReceive = receiveDataJSON.object();
-
 	QStringList allKeys = JSONReceive.keys();
-
 	QJsonObject Array;
-//    int id, status;
-//	float Qin,Qout1,Qout2,Pin,Pout,deltaP;
     QString name, type,id, status, treningNumber;
 	QJsonArray arrayQ;
-//	QJsonObject Q;
-//	QJsonObject P;
+
 
     for(int i = 0; i < m_verticalLayout->count(); i++)
     {
@@ -302,9 +313,9 @@ void MainWindow::on_receiveDataBDButton_clicked()
 //		Pout = P["P_out"].toDouble();
 //		deltaP = P["deltaP"].toDouble();
 
-        QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
+      //  QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
 
-        m_verticalLayout->addWidget(button);
+//       m_verticalLayout->addWidget(button);
     }
 
 
@@ -323,15 +334,9 @@ void MainWindow::on_receiveDataFileButton_clicked()
 		return;
 	}
 
-//	QByteArray saveData = jsonFile.readAll();
-
-
-    QString JsonString = jsonFile.readAll();//QString::fromWCharArray(convertedDataRecieve);
-
+    QString JsonString = jsonFile.readAll();
     QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
-
     QJsonObject JSONReceive = receiveDataJSON.object();
-
     QStringList allKeys = JSONReceive.keys();
 
     QJsonObject Array;
@@ -376,9 +381,9 @@ void MainWindow::on_receiveDataFileButton_clicked()
 //        Pout = P["P_out"].toDouble();
 //        deltaP = P["deltaP"].toDouble();
 
-        QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
+        //QDynamicLayout *button = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
 
-        m_verticalLayout->addWidget(button);
+        //m_verticalLayout->addWidget(button);
 
     }
 
@@ -386,28 +391,5 @@ void MainWindow::on_receiveDataFileButton_clicked()
 	textStatusBar->setText("Успех");
 
 
-//	// Выбираем файл
-//		QString openFileName = QFileDialog::getOpenFileName(this,
-//															tr("Open Json File"),
-//															QString(),
-//															tr("JSON (*.json)"));
-//		QFileInfo fileInfo(openFileName);   // С помощью QFileInfo
-//		QDir::setCurrent(fileInfo.path());  // установим текущую рабочую директорию, где будет файл
-//		// Создаём объект файла и открываем его на чтение
-//		QFile jsonFile(openFileName);
-//		if (!jsonFile.open(QIODevice::ReadOnly))
-//		{
-//			return;
-//		}
 
-//		// Считываем весь файл
-//		QByteArray saveData = jsonFile.readAll();
-//		// Создаём QJsonDocument
-//		QJsonDocument jsonDocument(QJsonDocument::fromJson(saveData));
-//		// Из которого выделяем объект в текущий рабочий QJsonObject
-//		m_currentJsonObject = jsonDocument.object();
-//		// Очищаем текстовое поле
-//		ui->jsonDocumentTextEdit->clear();
-//		// И устанавливаем в проверочное текстовое поле содержимое Json объекта
-//		ui->jsonDocumentTextEdit->setText(QJsonDocument(m_currentJsonObject).toJson(QJsonDocument::Indented));
 }

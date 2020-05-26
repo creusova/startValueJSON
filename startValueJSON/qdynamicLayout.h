@@ -13,10 +13,10 @@ class QDynamicLayout : public QWidget
     Q_OBJECT
 public:
     QDynamicLayout(QWidget *parent = 0,
-                   QString idNumber = "0",
+                   int idNumber = 0,
                    QString nameElement = "F500",
                    QString typeElement ="valve",
-                   QString statusElement = "0"
+                   int statusElement = 0
                   /* double Q_in = 0,
                    double Q_out1 = 0,
                    double Q_out2 = 0,
