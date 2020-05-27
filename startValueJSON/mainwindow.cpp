@@ -5,7 +5,7 @@
 
 wchar_t convertedDataRecieve[60000];
 
-
+#warning "этих ребят в поля класса"
 typedef bool (*CloseFunction)();
 CloseFunction closedll;
 typedef bool (*initFunction)(int);
@@ -43,13 +43,13 @@ MainWindow::~MainWindow()
 
 /**************************************************/
 /*   Метод для добавления динамических элементов  */
-/*   Вызывается при нажатие на кнопку Добавить    */
+/*   Вызывается при нажатии на кнопку Добавить    */
 /**************************************************/
 void MainWindow::on_addButton_clicked()
 {
 
-    QDynamicLayout *button = new QDynamicLayout(this);  // Создаем объект динамического Layout
-    m_verticalLayout->addWidget(button);
+    QDynamicLayout * layout = new QDynamicLayout(this);  // Создаем объект динамического Layout
+    m_verticalLayout->addWidget(layout);
 
 }
 
@@ -59,7 +59,7 @@ void MainWindow::on_addButton_clicked()
 /*********************************************************/
 /*             Метод для отключения библиотеки           */
 /*                Вызывает функцию closedll              */
-/* Вызывается при нажатие на кнопку Отключить библиотеку */
+/* Вызывается при нажатии на кнопку Отключить библиотеку */
 /*********************************************************/
 void MainWindow::on_closeLib_clicked()
 {
@@ -67,6 +67,10 @@ void MainWindow::on_closeLib_clicked()
     {
         textStatusBar->setText("Библиотека отключена");
         ui->checkLib->setCheckState(Qt::Unchecked);
+        
+        #warning "проверять наличие closeDLL"
+        #warning "можно сделать еще одну функцию, которая будет проверять указатель и вызывать только когда можно"
+        
         closedll();
     }
 }
@@ -77,7 +81,7 @@ void MainWindow::on_closeLib_clicked()
 /**********************************************************/
 /*            Метод для подключения библиотеки            */
 /*  Подключается к библиотеке и ищет все функции в ней    */
-/* Вызывается при нажатие на кнопку Подключить библиотеку */
+/* Вызывается при нажатии на кнопку Подключить библиотеку */
 /**********************************************************/
 void MainWindow::on_addLib_clicked()
 {
@@ -161,16 +165,13 @@ void MainWindow::on_addLib_clicked()
 
 /******************************************************/
 /*  Создание файла JSON и отправка его в библиотеку   */
-/* Вызывается при нажатие на кнопку Сформировать JSON */
+/* Вызывается при нажатии на кнопку Сформировать JSON */
 /******************************************************/
 void MainWindow::on_JSONButton_clicked()
 {
 
     QJsonObject sopoObject;
     QJsonObject idObject;
-    QJsonArray resultArray;
-    QJsonObject Qin_outObject;
-    QJsonObject Pin_outObject;
 
 
     for(int i = 0; i < m_verticalLayout->count(); i++)
@@ -208,6 +209,9 @@ void MainWindow::on_JSONButton_clicked()
     QJsonDocument saveDoc(sopoObject);
     auto toJsonData = saveDoc.toJson();
     saveFile.write(toJsonData);
+    
+#warning "надо выделять массив на куче оператором new"
+    
     wchar_t convertedData[ toJsonData.size() + 1 ];
     QString( toJsonData ).toWCharArray(convertedData);
     convertedData[toJsonData.size()] = '\0';
@@ -242,6 +246,7 @@ void MainWindow::on_JSONButton_clicked()
         closedll();
         return;
     }
+#warning " вместо нуля должен быть номер сессии"
 
     answerFromLib = false;
     answerFromLib = setData(0,convertedData);
@@ -262,7 +267,7 @@ void MainWindow::on_JSONButton_clicked()
 
 void MainWindow::on_receiveDataBDButton_clicked()
 {
-
+#warning " переменные максимально близко к месту использования, не рекомендую создавать больше одной переменной в строке"
 	QString JsonString = QString::fromWCharArray(convertedDataRecieve);
 	QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
 	QJsonObject JSONReceive = receiveDataJSON.object();
@@ -311,8 +316,10 @@ void MainWindow::on_receiveDataFileButton_clicked()
 	{
 		return;
 	}
-
+    
     QString JsonString = jsonFile.readAll();
+
+#warning "вынести в отдельную функцию, принимающую JsonString"
     QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
     QJsonObject JSONReceive = receiveDataJSON.object();
     QStringList allKeys = JSONReceive.keys();
