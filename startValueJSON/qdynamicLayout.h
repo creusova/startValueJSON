@@ -31,6 +31,10 @@ public slots:
 private:
     QHBoxLayout table;
     QIntValidator m_intValidator;
+
+
+
+
 };
 
 

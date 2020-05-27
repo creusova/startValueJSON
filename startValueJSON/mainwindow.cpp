@@ -5,18 +5,6 @@
 
 wchar_t convertedDataRecieve[60000];
 
-#warning "этих ребят в поля класса"
-typedef bool (*CloseFunction)();
-CloseFunction closedll;
-typedef bool (*initFunction)(int);
-initFunction initDll;
-typedef bool (*ConnectFunction)();
-ConnectFunction connectIni;
-typedef bool (*SetDataFunction)(int,wchar_t*);
-SetDataFunction setData;
-typedef wchar_t (*GetDataFunction)(int);
-GetDataFunction getData;
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -65,13 +53,14 @@ void MainWindow::on_closeLib_clicked()
 {
     if (Qt::Checked==ui->checkLib->checkState())
     {
-        textStatusBar->setText("Библиотека отключена");
+        textStatusBar->setText("Отключение библиотеки");
         ui->checkLib->setCheckState(Qt::Unchecked);
         
-        #warning "проверять наличие closeDLL"
-        #warning "можно сделать еще одну функцию, которая будет проверять указатель и вызывать только когда можно"
-        
-        closedll();
+        bool answer=closedllWithCheck();
+        if(!answer)
+        {
+            textStatusBar->setText("Функция CloseDll не сработала");
+        }
     }
 }
 
@@ -121,7 +110,11 @@ void MainWindow::on_addLib_clicked()
         qWarning("Error InitDLL_Qt");
         textStatusBar->setText("Не найдена функция InitDLL_Qt");
         ui->checkLib->setCheckState(Qt::Unchecked);
-        closedll();
+        bool answer=closedllWithCheck();
+        if(!answer)
+        {
+            textStatusBar->setText("Функция CloseDll не сработала");
+        }
         return;
     }
 
@@ -132,7 +125,11 @@ void MainWindow::on_addLib_clicked()
         qWarning("Error dbConnectIni");
         textStatusBar->setText("Не найдена функция dbConnectIni");
         ui->checkLib->setCheckState(Qt::Unchecked);
-        closedll();
+        bool answer=closedllWithCheck();
+        if(!answer)
+        {
+            textStatusBar->setText("Функция CloseDll не сработала");
+        }
         return;
     }
 
@@ -143,7 +140,11 @@ void MainWindow::on_addLib_clicked()
         qWarning("Error SetDBDataString");
         textStatusBar->setText("Не найдена функция SetDBDataString");
         ui->checkLib->setCheckState(Qt::Unchecked);
-        closedll();
+        bool answer=closedllWithCheck();
+        if(!answer)
+        {
+            textStatusBar->setText("Функция CloseDll не сработала");
+        }
         return;
     }
 
@@ -154,11 +155,26 @@ void MainWindow::on_addLib_clicked()
         qWarning("Error GetDBDataString");
         textStatusBar->setText("Не найдена функция GetDBDataString");
         ui->checkLib->setCheckState(Qt::Unchecked);
+        bool answer=closedllWithCheck();
+        if(!answer)
+        {
+            textStatusBar->setText("Функция CloseDll не сработала");
+        }
+        return;
+    }
+
+
+    bool answerFromLib = initDll(8);
+    if (answerFromLib==false)
+    {
+        textStatusBar->setText("Функция InitDLL_Qt вернула false");
+        ui->checkLib->setCheckState(Qt::Unchecked);
         closedll();
         return;
     }
 
-    textStatusBar->setText("Все функции в библиотеке найдены");
+
+    textStatusBar->setText("Все функции в библиотеке найдены. InitDLL подключена");
 }
 
 
@@ -173,6 +189,8 @@ void MainWindow::on_JSONButton_clicked()
     QJsonObject sopoObject;
     QJsonObject idObject;
 
+
+    sopoObject["TRENING_NUMBER"]=ui->numberTrening->text();
 
     for(int i = 0; i < m_verticalLayout->count(); i++)
     {
@@ -191,7 +209,6 @@ void MainWindow::on_JSONButton_clicked()
         idObject["status"] = status;
 
 
-        sopoObject["TRENING_NUMBER"]=ui->numberTrening->text();
         sopoObject[id] = idObject;
 
 
@@ -210,9 +227,19 @@ void MainWindow::on_JSONButton_clicked()
     auto toJsonData = saveDoc.toJson();
     saveFile.write(toJsonData);
     
-#warning "надо выделять массив на куче оператором new"
-    
-    wchar_t convertedData[ toJsonData.size() + 1 ];
+    textStatusBar->setText("JSON сохранен (saveData.json)");
+
+
+    if(Qt::Unchecked==ui->checkLib->checkState())
+    {
+        textStatusBar->setText("Библиотека не подключена, JSON файл не отправился, но сохранен(saveData.json)");
+        return;
+    }
+
+
+    QVector<wchar_t> dataVector;
+    dataVector.resize(toJsonData.size()+1);
+    wchar_t * convertedData = dataVector.data();
     QString( toJsonData ).toWCharArray(convertedData);
     convertedData[toJsonData.size()] = '\0';
 
@@ -227,17 +254,7 @@ void MainWindow::on_JSONButton_clicked()
 
     bool answerFromLib = false;
 
-    answerFromLib = initDll(8);
-    if (answerFromLib==false)
-    {
-        textStatusBar->setText("Функция InitDLL_Qt вернула false");
-        ui->checkLib->setCheckState(Qt::Unchecked);
-        closedll();
-        return;
-    }
 
-
-    answerFromLib = false;
     answerFromLib = connectIni();
     if (answerFromLib==false)
     {
@@ -246,10 +263,23 @@ void MainWindow::on_JSONButton_clicked()
         closedll();
         return;
     }
-#warning " вместо нуля должен быть номер сессии"
+
+
+    if(ui->sessionNumber->text().isEmpty())
+    {
+       textStatusBar->setText("Не задан номер сессии. Нельзя отправить сообщение в базу");
+       return;
+    }
+
+    int session = ui->sessionNumber->text().toInt();
+    if(session<0)
+    {
+        textStatusBar->setText("Номер сессии отрицательный. Нельзя отправить сообщение в базу");
+        return;
+    }
 
     answerFromLib = false;
-    answerFromLib = setData(0,convertedData);
+    answerFromLib = setData(session,convertedData);
     if (answerFromLib==false)
     {
         textStatusBar->setText("Функция SetDBDataString вернула false");
@@ -267,42 +297,15 @@ void MainWindow::on_JSONButton_clicked()
 
 void MainWindow::on_receiveDataBDButton_clicked()
 {
-#warning " переменные максимально близко к месту использования, не рекомендую создавать больше одной переменной в строке"
-	QString JsonString = QString::fromWCharArray(convertedDataRecieve);
-	QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
-	QJsonObject JSONReceive = receiveDataJSON.object();
-	QStringList allKeys = JSONReceive.keys();
-	QJsonObject Array;
-    int id, status;
-    QString name, type, treningNumber;
-	QJsonArray arrayQ;
 
-
-    for(int i = 0; i < m_verticalLayout->count(); i++)
+    QString JsonString = QString::fromWCharArray(getData(ui->sessionNumber->text().toInt()));
+    if(JsonString.isEmpty())
     {
-        QDynamicLayout *dynamicLayout = qobject_cast<QDynamicLayout*>(m_verticalLayout->itemAt(i)->widget());
-        dynamicLayout->deleteAll();
+        textStatusBar->setText("Данных из базы нет");
+        return;
     }
+    parsingJSON(JsonString);
 
-    treningNumber = JSONReceive["TRENING_NUMBER"].toString();
-    ui->numberTrening->setText(treningNumber);
-
-    for(int i=1; i<allKeys.size();i++)
-	{
-		Array = JSONReceive[allKeys[i]].toObject();
-
-        id = Array["id"].toInt();
-        status = Array["status"].toInt();
-        name = Array["name"].toString();
-        type = Array["type_element"].toString();
-
-        QDynamicLayout *layout = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
-
-       m_verticalLayout->addWidget(layout);
-    }
-
-
-	textStatusBar->setText("Успех");
 
 }
 
@@ -319,17 +322,18 @@ void MainWindow::on_receiveDataFileButton_clicked()
     
     QString JsonString = jsonFile.readAll();
 
-#warning "вынести в отдельную функцию, принимающую JsonString"
+    parsingJSON(JsonString);
+}
+
+
+void MainWindow::parsingJSON(QString &JsonString)
+{
     QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
     QJsonObject JSONReceive = receiveDataJSON.object();
     QStringList allKeys = JSONReceive.keys();
 
-    QJsonObject Array;
-    int id, status;
-    QString name, type,treningNumber;
-    QJsonArray arrayQ;
-    QJsonObject Q;
-    QJsonObject P;
+    QString treningNumber;
+
 
     for(int i = 0; i < m_verticalLayout->count(); i++)
     {
@@ -342,24 +346,22 @@ void MainWindow::on_receiveDataFileButton_clicked()
 
     for(int i=1; i<allKeys.size();i++)
     {
-        Array = JSONReceive[allKeys[i]].toObject();
+        QJsonObject Array = JSONReceive[allKeys[i]].toObject();
 
-        id = Array["id"].toInt();
-        status = Array["status"].toInt();
+        int id = Array["id"].toInt();
+        int status = Array["status"].toInt();
 
-        name = Array["name"].toString();
-        type = Array["type_element"].toString();
+        QString name = Array["name"].toString();
+        QString type = Array["type_element"].toString();
 
 
-        QDynamicLayout *layout = new QDynamicLayout(this,id,name,type,status);  // Создаем объект динамической кнопки
+        QDynamicLayout *layout = new QDynamicLayout(this,id,name,type,status);
 
         m_verticalLayout->addWidget(layout);
 
     }
 
 
-	textStatusBar->setText("Успех");
-
-
+    textStatusBar->setText("JSON выведен на экран");
 
 }

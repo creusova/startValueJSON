@@ -98,7 +98,7 @@
      <item>
       <widget class="QLineEdit" name="numberTrening">
        <property name="text">
-        <string>0</string>
+        <string>1</string>
        </property>
       </widget>
      </item>
@@ -191,7 +191,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="numberTrening_2"/>
+      <widget class="QLineEdit" name="sessionNumber">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

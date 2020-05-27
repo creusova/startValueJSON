@@ -1,9 +1,15 @@
 {
-    "TRENING_NUMBER": "",
+    "TRENING_NUMBER": "1",
     "id0": {
-        "id": "0",
+        "id": 0,
         "name": "F500",
-        "status": "0",
+        "status": 0,
+        "type_element": "valve"
+    },
+    "id56": {
+        "id": 56,
+        "name": "F500",
+        "status": 0,
         "type_element": "valve"
     }
 }

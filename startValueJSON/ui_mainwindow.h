@@ -52,7 +52,7 @@ public:
     QWidget *layoutWidget_2;
     QHBoxLayout *horizontalLayout_4;
     QLabel *label_8;
-    QLineEdit *numberTrening_2;
+    QLineEdit *sessionNumber;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -167,10 +167,10 @@ public:
 
         horizontalLayout_4->addWidget(label_8);
 
-        numberTrening_2 = new QLineEdit(layoutWidget_2);
-        numberTrening_2->setObjectName(QString::fromUtf8("numberTrening_2"));
+        sessionNumber = new QLineEdit(layoutWidget_2);
+        sessionNumber->setObjectName(QString::fromUtf8("sessionNumber"));
 
-        horizontalLayout_4->addWidget(numberTrening_2);
+        horizontalLayout_4->addWidget(sessionNumber);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -200,12 +200,13 @@ public:
         receiveDataFileButton->setText(QCoreApplication::translate("MainWindow", "\320\237\320\276\320\273\321\203\321\207\320\270\321\202\321\214 \320\264\320\260\320\275\320\275\321\213\320\265\n"
 " \321\201 \321\204\320\260\320\271\320\273\320\260", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "Trening Number", nullptr));
-        numberTrening->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        numberTrening->setText(QCoreApplication::translate("MainWindow", "1", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "Id", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "name", nullptr));
         label_6->setText(QCoreApplication::translate("MainWindow", "type element", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "status", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Session Number", nullptr));
+        sessionNumber->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
     } // retranslateUi
 
 };

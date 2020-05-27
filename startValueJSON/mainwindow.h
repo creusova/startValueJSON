@@ -39,6 +39,30 @@ private:
 
     QVBoxLayout * m_verticalLayout;             // Скролл для поля где добавляются Layout
     QLabel * textStatusBar;                     // Статус бар внизу
+
+
+    typedef bool (*CloseFunction)();
+    CloseFunction closedll;
+    typedef bool (*initFunction)(int);
+    initFunction initDll;
+    typedef bool (*ConnectFunction)();
+    ConnectFunction connectIni;
+    typedef bool (*SetDataFunction)(int,wchar_t*);
+    SetDataFunction setData;
+    typedef wchar_t* (*GetDataFunction)(int);
+    GetDataFunction getData;
+
+
+    void parsingJSON(QString &);
+
+    bool closedllWithCheck()
+    {
+        if(closedll)
+        {
+            return closedll();
+        }
+        return false;
+    }
 };
 
 #endif // MAINWINDOW_H
