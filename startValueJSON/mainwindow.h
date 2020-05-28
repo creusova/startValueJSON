@@ -41,6 +41,7 @@ private:
     QLabel * textStatusBar;                     // Статус бар внизу
 
 
+// Указатели на библиотечные функции
     typedef bool (*CloseFunction)();
     CloseFunction closedll;
     typedef bool (*initFunction)(int);
@@ -55,6 +56,8 @@ private:
 
     void parsingJSON(QString &);
 
+
+ // Проверка, есть ли указатель на функции отключения от библиотеке. Если есть, то закрываем dll.
     bool closedllWithCheck()
     {
         if(closedll)

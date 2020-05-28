@@ -179,6 +179,7 @@ void MainWindow::on_addLib_clicked()
 
 
 
+
 /******************************************************/
 /*  Создание файла JSON и отправка его в библиотеку   */
 /* Вызывается при нажатии на кнопку Сформировать JSON */
@@ -295,6 +296,12 @@ void MainWindow::on_JSONButton_clicked()
 
 
 
+
+/************************************************************/
+/*         Метод для получения данных с БД                  */
+/* Вызывается при нажатии на кнопку Получить данные из базы */
+/*                     Не тестировалось                     */
+/************************************************************/
 void MainWindow::on_receiveDataBDButton_clicked()
 {
 
@@ -309,6 +316,13 @@ void MainWindow::on_receiveDataBDButton_clicked()
 
 }
 
+
+
+
+/*************************************************************/
+/*         Метод для получения данных с JSON файла           */
+/* Вызывается при нажатии на кнопку Получить данные из файла */
+/*************************************************************/
 void MainWindow::on_receiveDataFileButton_clicked()
 {
 	QString str = QFileDialog::getOpenFileName(0, "Open Dialog", "", "*.ini *.json *.txt");
@@ -326,6 +340,14 @@ void MainWindow::on_receiveDataFileButton_clicked()
 }
 
 
+
+
+
+/*************************************************************/
+/* Метод для распарсирования файлов из БД или из JSON файла  */
+/* Вызывается в фунциях on_receiveDataFileButton_clicked     */
+/*            и on_receiveDataBDButton_clicked               */
+/*************************************************************/
 void MainWindow::parsingJSON(QString &JsonString)
 {
     QJsonDocument receiveDataJSON = QJsonDocument::fromJson(JsonString.toUtf8());
